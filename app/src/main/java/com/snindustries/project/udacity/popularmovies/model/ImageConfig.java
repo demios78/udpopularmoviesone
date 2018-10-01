@@ -2,7 +2,7 @@ package com.snindustries.project.udacity.popularmovies.model;
 
 import java.util.List;
 
-class ImageConfig {
+public class ImageConfig {
 
     private List<String> backdropSizes = null;
     private String baseUrl;
