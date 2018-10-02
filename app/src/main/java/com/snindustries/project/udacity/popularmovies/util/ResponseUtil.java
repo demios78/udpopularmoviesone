@@ -12,6 +12,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * Response parsing utilities class to communicate with IMDB APIs.
+ *
+ * @author shaaz noormohammad
+ * October 1, 2018
+ */
 public class ResponseUtil {
     public static ConfigResponse parseConfigResponse(String input) {
         JSONObject jsonObject;

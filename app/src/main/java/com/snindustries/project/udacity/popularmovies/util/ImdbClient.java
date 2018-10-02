@@ -7,13 +7,21 @@ import com.snindustries.project.udacity.popularmovies.model.Movie;
 import com.snindustries.project.udacity.popularmovies.model.MovieSearchResponse;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ *
+ * Singleton class to communicate with IMDB APIs.
+ *
+ * @author shaaz noormohammad
+ * October 1, 2018
+ */
 public class ImdbClient {
-    public static final int IMAGE_SIZE = 5;
+    private static final int IMAGE_SIZE = 5;
     private static ImdbClient INSTANCE;
     private final OkHttpClient client;
     private final Params params;
@@ -24,15 +32,14 @@ public class ImdbClient {
         client = new OkHttpClient();
 
 
-        ConfigResponse configurationParams=null;
+        ConfigResponse configurationParams = null;
         try {
-            configurationParams = ResponseUtil.parseConfigResponse( getConfiguration() );
+            configurationParams = ResponseUtil.parseConfigResponse(getConfiguration());
         } catch (IOException e) {
             e.printStackTrace();
         }
         params.configResponse = configurationParams;
         params.imageConfig = configurationParams.getImageConfig();
-
     }
 
 
@@ -49,37 +56,37 @@ public class ImdbClient {
 
     private String getConfiguration() throws IOException {
         Request request = new Request.Builder()
-                .url( Params.baseUrl + "/configuration?api_key=" + BuildConfig.ApiKey)
+                .url(Params.baseUrl + "/configuration?api_key=" + BuildConfig.ApiKey)
                 .build();
         Response response = client.newCall(request).execute();
-        return response.body().string();
+        return Objects.requireNonNull(response.body()).string();
     }
 
     public MovieSearchResponse getMoviesPopular(int page) throws IOException {
         Request request = new Request.Builder()
-                .url(Params.baseUrl + "/movie/popular?api_key="+ BuildConfig.ApiKey + "&page="+page)
+                .url(Params.baseUrl + "/movie/popular?api_key=" + BuildConfig.ApiKey + "&page=" + page)
                 .build();
         Response response = client.newCall(request).execute();
-        return ResponseUtil.parseMovieSearchResponse( response.body().string() );
+        return ResponseUtil.parseMovieSearchResponse(Objects.requireNonNull(response.body()).string());
     }
 
 
     public MovieSearchResponse getMoviesTopRated(int page) throws IOException {
         Request request = new Request.Builder()
-                .url(Params.baseUrl + "/movie/top_rated?api_key="+ BuildConfig.ApiKey + "&page="+page)
+                .url(Params.baseUrl + "/movie/top_rated?api_key=" + BuildConfig.ApiKey + "&page=" + page)
                 .build();
         Response response = client.newCall(request).execute();
-        return ResponseUtil.parseMovieSearchResponse( response.body().string() );
+        return ResponseUtil.parseMovieSearchResponse(Objects.requireNonNull(response.body()).string());
     }
 
-    private static class Params{
+    public String getPosterURL(Movie movie) {
+        return params.imageConfig.getBaseUrl() + params.imageConfig.getPosterSizes().get(IMAGE_SIZE) + "/" + movie.getPosterPath();
+    }
+
+    private static class Params {
+        static final String baseUrl = "https://api.themoviedb.org/3";
         ConfigResponse configResponse;
         ImageConfig imageConfig;
-        static final String baseUrl = "https://api.themoviedb.org/3";
-    }
-
-    public String getPosterURL(Movie movie){
-        return params.imageConfig.getBaseUrl() + params.imageConfig.getPosterSizes().get(IMAGE_SIZE) + "/" + movie.getPosterPath() ;
     }
 
 }

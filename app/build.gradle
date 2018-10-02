@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        debug{
+        debug {
             buildConfigField 'String', "ApiKey", IMDB_API_KEY_V3_AUTH //<- Add
             resValue 'string', "api_key", IMDB_API_KEY_V3_AUTH
         }
@@ -29,4 +29,5 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.android.support:design:27.1.1'
 }

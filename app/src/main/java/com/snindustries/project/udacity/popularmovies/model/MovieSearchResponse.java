@@ -2,6 +2,17 @@ package com.snindustries.project.udacity.popularmovies.model;
 
 import java.util.List;
 
+/**
+ *
+ * Model for response of Get Movie
+ *
+ * https://developers.themoviedb.org/3/movies/get-popular-movies
+ * and
+ * https://developers.themoviedb.org/3/movies/get-top-rated-movies
+ *
+ * @author shaaz noormohammad
+ * (c) October 1, 2018
+ */
 public class MovieSearchResponse {
     private Integer page;
     private Integer totalResults;
