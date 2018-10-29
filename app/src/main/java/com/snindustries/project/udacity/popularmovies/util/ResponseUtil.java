@@ -13,13 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Response parsing utilities class to communicate with IMDB APIs.
  *
  * @author shaaz noormohammad
  * October 1, 2018
  */
-public class ResponseUtil {
+public final class ResponseUtil {
+    private ResponseUtil() {
+        //Static access only
+    }
+
     public static ConfigResponse parseConfigResponse(String input) {
         JSONObject jsonObject;
         ConfigResponse configResponse = new ConfigResponse();
@@ -27,7 +30,7 @@ public class ResponseUtil {
         try {
             jsonObject = new JSONObject(input);
             configResponse.setImageConfig(parseImageConfig(jsonObject.getJSONObject("images")));
-             configResponse.setChangeKeys(parseStringArray(jsonObject.getJSONArray("change_keys")));
+            configResponse.setChangeKeys(parseStringArray(jsonObject.getJSONArray("change_keys")));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -48,31 +51,34 @@ public class ResponseUtil {
         return out;
     }
 
-    private static List<Integer> parseIntArray(JSONArray jsonArray) throws JSONException {
+    private static List<Integer> parseIntArray(JSONArray jsonArray) {
+        if (jsonArray == null) {
+            return new ArrayList<>();
+        }
         int arrayLength = jsonArray.length();
         List<Integer> out = new ArrayList<>(arrayLength);
         for (int index = 0; index < arrayLength; index++) {
-            out.add(jsonArray.getInt(index));
+            out.add(jsonArray.optInt(index));
         }
         return out;
     }
 
-    private static Movie parseMovie(JSONObject json) throws JSONException {
+    private static Movie parseMovie(JSONObject json) {
         Movie movie = new Movie();
-        movie.setAdult(json.getBoolean("adult"));
-        movie.setBackdropPath(json.getString("backdrop_path"));
-        movie.setGenreIds(parseIntArray(json.getJSONArray("genre_ids")));
-        movie.setId(json.getInt("id"));
-        movie.setOriginalLanguage(json.getString("original_language"));
-        movie.setOriginalTitle(json.getString("original_title"));
-        movie.setOverview(json.getString("overview"));
-        movie.setPopularity(json.getDouble("popularity"));
-        movie.setPosterPath(json.getString("poster_path"));
-        movie.setReleaseDate(json.getString("release_date"));
-        movie.setTitle(json.getString("title"));
-        movie.setVideo(json.getBoolean("video"));
-        movie.setVoteAverage(json.getDouble("vote_average"));
-        movie.setVoteCount(json.getInt("vote_count"));
+        movie.setAdult(json.optBoolean("adult"));//fallback to ""
+        movie.setBackdropPath(json.optString("backdrop_path"));//fallback to false
+        movie.setGenreIds(parseIntArray(json.optJSONArray("genre_ids")));//fallback to 0
+        movie.setId(json.optInt("id"));
+        movie.setOriginalLanguage(json.optString("original_language"));
+        movie.setOriginalTitle(json.optString("original_title"));
+        movie.setOverview(json.optString("overview"));
+        movie.setPopularity(json.optDouble("popularity"));
+        movie.setPosterPath(json.optString("poster_path"));
+        movie.setReleaseDate(json.optString("release_date"));
+        movie.setTitle(json.optString("title"));
+        movie.setVideo(json.optBoolean("video"));
+        movie.setVoteAverage(json.optDouble("vote_average"));//fallback to 0d
+        movie.setVoteCount(json.optInt("vote_count"));
         return movie;
     }
 

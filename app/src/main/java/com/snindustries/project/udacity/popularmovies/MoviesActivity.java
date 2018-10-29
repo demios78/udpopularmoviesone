@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.databinding.DataBindingUtil;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.snindustries.project.udacity.popularmovies.databinding.ActivityMoviesBinding;
 import com.snindustries.project.udacity.popularmovies.model.Movie;
 import com.snindustries.project.udacity.popularmovies.model.MovieSearchResponse;
 import com.snindustries.project.udacity.popularmovies.util.ImdbClient;
@@ -42,8 +44,9 @@ import java.util.Objects;
 public class MoviesActivity extends AppCompatActivity {
 
     private static final int MOST_POPULAR = 0;
-    private static final int POSTER_WIDTH = 520;
+    private static final int POSTER_WIDTH = 520;//TODO configure this in DP
     private static final int TOP_RATED = 1;
+    ActivityMoviesBinding binding;
     private MoviesAdapter adapter;
     private int currentPage;
     private int listSort = MOST_POPULAR;
@@ -55,10 +58,8 @@ public class MoviesActivity extends AppCompatActivity {
     };
 
     private void checkNetworkAvailability() {
-        if (!isNetworkConnected()) {
-            findViewById(R.id.network_disconnected).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.network_disconnected).setVisibility(View.GONE);
+        binding.networkDisconnected.setVisibility(!isNetworkConnected() ? View.VISIBLE : View.GONE);
+        if (isNetworkConnected()) {
             initializeMovieList();
         }
     }
@@ -117,7 +118,7 @@ public class MoviesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movies);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_movies);
     }
 
     @Override
@@ -168,7 +169,6 @@ public class MoviesActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * Gets the next page of movie results.
      *
      * @author shaaz noormohammad
@@ -215,7 +215,7 @@ public class MoviesActivity extends AppCompatActivity {
     }
 
     /**
-     *  When a movie is selected, display its details.
+     * When a movie is selected, display its details.
      *
      * @author shaaz noormohammad
      * October 1, 2018
@@ -227,6 +227,10 @@ public class MoviesActivity extends AppCompatActivity {
             intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_PARCEL, item);
             view.getContext().startActivity(intent);
         }
+    }
+
+    public static class MoviesActivityViewModel {
+
     }
 
     /**
@@ -358,7 +362,6 @@ public class MoviesActivity extends AppCompatActivity {
         }
 
         static class ProgressViewHolder extends RecyclerView.ViewHolder {
-
             ProgressViewHolder(View itemView) {
                 super(itemView);
             }
@@ -367,7 +370,7 @@ public class MoviesActivity extends AppCompatActivity {
     }
 
     /**
-     *  Listen for the user to scroll near the bottom of the results.  Then load more.
+     * Listen for the user to scroll near the bottom of the results.  Then load more.
      *
      * @author shaaz noormohammad
      * October 1, 2018

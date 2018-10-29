@@ -19,7 +19,7 @@ import okhttp3.Response;
  *
  * @author shaaz noormohammad
  * October 1, 2018
- */
+ *///TODO change to REtrofit client
 public class ImdbClient {
     private static final int IMAGE_SIZE = 5;
     private static ImdbClient INSTANCE;
