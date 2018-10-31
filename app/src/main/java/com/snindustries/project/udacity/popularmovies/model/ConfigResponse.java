@@ -1,5 +1,7 @@
 package com.snindustries.project.udacity.popularmovies.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,9 @@ import java.util.List;
  */
 public class ConfigResponse {
 
+    @SerializedName("change_keys")
     private List<String> changeKeys = null;
+    @SerializedName("images")
     private ImageConfig imageConfig;
 
     public List<String> getChangeKeys() {

@@ -1,15 +1,17 @@
 package com.snindustries.project.udacity.popularmovies.model;
 
+import android.arch.persistence.room.Entity;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Model for response of Get Movie
- *
+ * <p>
  * https://developers.themoviedb.org/3/movies/get-popular-movies
  * and
  * https://developers.themoviedb.org/3/movies/get-top-rated-movies
@@ -17,6 +19,7 @@ import java.util.List;
  * @author shaaz noormohammad
  * (c) October 1, 2018
  */
+@Entity
 public class Movie implements Parcelable {
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Movie>() {
 
@@ -30,19 +33,36 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    @SerializedName("adult")
     private Boolean adult;
+    @SerializedName("backdrop_path")
     private String backdropPath;
+    @SerializedName("favorite")
+    private Boolean favorite;
+    @SerializedName("genre_ids")
     private List<Integer> genreIds = null;
+    @SerializedName("id")
     private Integer id;
+    @SerializedName("original_language")
     private String originalLanguage;
+    @SerializedName("original_title")
     private String originalTitle;
+    @SerializedName("overview")
     private String overview;
+    @SerializedName("popularity")
     private Double popularity;
+    @SerializedName("poster_path")
     private String posterPath;
+    @SerializedName("release_date")
     private String releaseDate;
+    @SerializedName("title")
     private String title;
+    @SerializedName("video")
     private Boolean video;
+    @SerializedName("vote_average")
     private Double voteAverage;
+    @SerializedName("vote_count")
     private Integer voteCount;
 
     public Movie() {
@@ -65,6 +85,7 @@ public class Movie implements Parcelable {
         video = source.readByte() == 1;
         voteAverage = source.readDouble();
         voteCount = source.readInt();
+        adult = source.readByte() == 1;
     }
 
     @Override
@@ -86,6 +107,14 @@ public class Movie implements Parcelable {
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
+    }
+
+    public Boolean getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        this.favorite = favorite;
     }
 
     public List<Integer> getGenreIds() {
@@ -200,5 +229,6 @@ public class Movie implements Parcelable {
         dest.writeByte((byte) (video ? 1 : 0));
         dest.writeDouble(voteAverage);
         dest.writeInt(voteCount);
+        dest.writeByte((byte) (favorite ? 1 : 0));
     }
 }

@@ -1,11 +1,12 @@
 package com.snindustries.project.udacity.popularmovies.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
- *
  * Model for response of Get Movie
- *
+ * <p>
  * https://developers.themoviedb.org/3/movies/get-popular-movies
  * and
  * https://developers.themoviedb.org/3/movies/get-top-rated-movies
@@ -14,9 +15,14 @@ import java.util.List;
  * (c) October 1, 2018
  */
 public class MovieSearchResponse {
+    @SerializedName("results")
+    public List<Movie> results = null;
+    @SerializedName("page")
     private Integer page;
-    private Integer totalResults;
+    @SerializedName("total_pages")
     private Integer totalPages;
+    @SerializedName("total_results")
+    private Integer totalResults;
 
     public Integer getPage() {
         return page;
@@ -24,22 +30,6 @@ public class MovieSearchResponse {
 
     public void setPage(Integer page) {
         this.page = page;
-    }
-
-    public Integer getTotalResults() {
-        return totalResults;
-    }
-
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
-    }
-
-    public Integer getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
     }
 
     public List<Movie> getResults() {
@@ -50,5 +40,19 @@ public class MovieSearchResponse {
         this.results = results;
     }
 
-    public List<Movie> results = null;
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public Integer getTotalResults() {
+        return totalResults;
+    }
+
+    public void setTotalResults(Integer totalResults) {
+        this.totalResults = totalResults;
+    }
 }

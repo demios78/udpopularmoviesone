@@ -1,5 +1,8 @@
 package com.snindustries.project.udacity.popularmovies;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +33,6 @@ import com.snindustries.project.udacity.popularmovies.model.MovieSearchResponse;
 import com.snindustries.project.udacity.popularmovies.util.ImdbClient;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,20 +50,20 @@ public class MoviesActivity extends AppCompatActivity {
     private static final int POSTER_WIDTH = 520;//TODO configure this in DP
     private static final int TOP_RATED = 1;
     ActivityMoviesBinding binding;
-    private MoviesAdapter adapter;
-    private int currentPage;
-    private int listSort = MOST_POPULAR;
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             checkNetworkAvailability();
         }
     };
+    private MoviesAdapter adapter;
+    private int currentPage;
+    private int listSort = MOST_POPULAR;
 
     private void checkNetworkAvailability() {
         binding.networkDisconnected.setVisibility(!isNetworkConnected() ? View.VISIBLE : View.GONE);
         if (isNetworkConnected()) {
-            initializeMovieList();
+            //initializeMovieList();//TODO
         }
     }
 
@@ -80,6 +83,16 @@ public class MoviesActivity extends AppCompatActivity {
     }
 
     /**
+     * Gets the available width for a poster.
+     *
+     * @param numberOfPosters
+     * @return
+     */
+    private int getTargetWidth(int numberOfPosters) {
+        return getWidth() / numberOfPosters;
+    }
+
+    /**
      * Width of the screen.
      *
      * @return
@@ -95,7 +108,7 @@ public class MoviesActivity extends AppCompatActivity {
         RecyclerView recycler = findViewById(R.id.recycler);
         final GridLayoutManager layoutManager = new GridLayoutManager(this, getNumberOfPosters());
         if (adapter == null) {
-            adapter = new MoviesAdapter(getWidth() / getNumberOfPosters());
+            adapter = new MoviesAdapter(getTargetWidth(getNumberOfPosters()));
         }
         recycler.setAdapter(adapter);
         final MoviesAdapter finalAdapter = adapter;
@@ -119,6 +132,17 @@ public class MoviesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_movies);
+        binding.recycler.setLayoutManager(new GridLayoutManager(this, getNumberOfPosters()));
+
+        MovieViewModel movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        final MoviesPagingAdapter adapter = new MoviesPagingAdapter(this, getTargetWidth(getNumberOfPosters()));
+        movieViewModel.moviePagedList.observe(this, new Observer<PagedList<Movie>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<Movie> movies) {
+                adapter.submitList(movies);
+            }
+        });
+        binding.recycler.setAdapter(adapter);
     }
 
     @Override
@@ -185,15 +209,11 @@ public class MoviesActivity extends AppCompatActivity {
 
         @Override
         protected MovieSearchResponse doInBackground(Integer... integers) {
-            try {
-                switch (listSort) {
-                    case MOST_POPULAR:
-                        return ImdbClient.get().getMoviesPopular(integers[0]);
-                    case TOP_RATED:
-                        return ImdbClient.get().getMoviesTopRated(integers[0]);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            switch (listSort) {
+                case MOST_POPULAR:
+                    //return ImdbClient.get().getMoviesPopular(integers[0]);
+                case TOP_RATED:
+                    //return ImdbClient.get().getMoviesTopRated(integers[0]);
             }
             return null;
         }
@@ -229,8 +249,13 @@ public class MoviesActivity extends AppCompatActivity {
         }
     }
 
-    public static class MoviesActivityViewModel {
+    static class MovieViewHolder extends RecyclerView.ViewHolder {
+        final ImageView moviePoster;
 
+        MovieViewHolder(View itemView) {
+            super(itemView);
+            moviePoster = itemView.findViewById(R.id.movie_poster);
+        }
     }
 
     /**
@@ -350,15 +375,6 @@ public class MoviesActivity extends AppCompatActivity {
 
         interface SelectionListener<T> {
             void onItemClicked(View view, T item);
-        }
-
-        static class MovieViewHolder extends RecyclerView.ViewHolder {
-            final ImageView moviePoster;
-
-            MovieViewHolder(View itemView) {
-                super(itemView);
-                moviePoster = itemView.findViewById(R.id.movie_poster);
-            }
         }
 
         static class ProgressViewHolder extends RecyclerView.ViewHolder {

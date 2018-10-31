@@ -1,11 +1,12 @@
 package com.snindustries.project.udacity.popularmovies.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
- *
  * Model for response of Get API configuration
- *
+ * <p>
  * https://developers.themoviedb.org/3/configuration/get-api-configuration
  *
  * @author shaaz noormohammad
@@ -13,12 +14,19 @@ import java.util.List;
  */
 public class ImageConfig {
 
+    @SerializedName("backdrop_sizes")
     private List<String> backdropSizes = null;
+    @SerializedName("base_url")
     private String baseUrl;
+    @SerializedName("logo_sizes")
     private List<String> logoSizes = null;
+    @SerializedName("poster_sizes")
     private List<String> posterSizes = null;
+    @SerializedName("profile_sizes")
     private List<String> profileSizes = null;
+    @SerializedName("secure_base_url")
     private String secureBaseUrl;
+    @SerializedName("still_sizes")
     private List<String> stillSizes = null;
 
     public List<String> getBackdropSizes() {
