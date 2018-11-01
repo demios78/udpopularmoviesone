@@ -20,9 +20,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -135,14 +137,28 @@ public class MoviesActivity extends AppCompatActivity {
         binding.recycler.setLayoutManager(new GridLayoutManager(this, getNumberOfPosters()));
 
         MovieViewModel movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        final MoviesPagingAdapter adapter = new MoviesPagingAdapter(this, getTargetWidth(getNumberOfPosters()));
-        movieViewModel.moviePagedList.observe(this, new Observer<PagedList<Movie>>() {
+        final MoviesPagingAdapter adapter = new MoviesPagingAdapter(getTargetWidth(getNumberOfPosters()));
+        movieViewModel.getMoviePagedList().observe(this, new Observer<PagedList<Movie>>() {
             @Override
             public void onChanged(@Nullable PagedList<Movie> movies) {
                 adapter.submitList(movies);
             }
         });
         binding.recycler.setAdapter(adapter);
+        binding.recycler.addOnItemTouchListener(new RecyclerTouchListener(this, binding.recycler, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Movie item = adapter.getItem(position);
+                Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_PARCEL, item);
+                view.getContext().startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                onClick(view, position);
+            }
+        }));
     }
 
     @Override
@@ -190,6 +206,12 @@ public class MoviesActivity extends AppCompatActivity {
         } else {
             checkNetworkAvailability();
         }
+    }
+
+    public static interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
     }
 
     /**
@@ -425,6 +447,51 @@ public class MoviesActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+    }
+
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private ClickListener clickListener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(Context context, final RecyclerView recycler, final ClickListener clickListener) {
+            this.clickListener = clickListener;
+            this.gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recycler.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clickListener != null) {
+                        clickListener.onLongClick(child, recycler.getChildAdapterPosition(child));
+                    }
+                }
+
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+            }
+
+            );
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
+                clickListener.onClick(child, rv.getChildAdapterPosition(child));
+            }
+            return false;
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
         }
     }
 }

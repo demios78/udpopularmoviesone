@@ -1,10 +1,16 @@
 package com.snindustries.project.udacity.popularmovies.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
+import com.snindustries.project.udacity.popularmovies.database.MovieTypeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,26 +40,47 @@ public class Movie implements Parcelable {
         }
     };
 
+    @ColumnInfo
     @SerializedName("adult")
     private Boolean adult;
+
+    @ColumnInfo
     @SerializedName("backdrop_path")
     private String backdropPath;
+
+    @ColumnInfo
+    @Nullable
     @SerializedName("favorite")
     private Boolean favorite;
+
     @SerializedName("genre_ids")
+    @TypeConverters(MovieTypeConverter.class)
     private List<Integer> genreIds = null;
+
+    @PrimaryKey
     @SerializedName("id")
     private Integer id;
+
     @SerializedName("original_language")
     private String originalLanguage;
+
     @SerializedName("original_title")
     private String originalTitle;
+
     @SerializedName("overview")
     private String overview;
+
     @SerializedName("popularity")
     private Double popularity;
+
+    @ColumnInfo
+    @Nullable
+    private Integer popularityOrder;
+
     @SerializedName("poster_path")
     private String posterPath;
+    @Nullable
+    private Integer ratingOrder;
     @SerializedName("release_date")
     private String releaseDate;
     @SerializedName("title")
@@ -69,6 +96,7 @@ public class Movie implements Parcelable {
         //default null object
     }
 
+    @Ignore
     private Movie(Parcel source) {
         adult = source.readByte() == 1;
         backdropPath = source.readString();
@@ -165,12 +193,30 @@ public class Movie implements Parcelable {
         this.popularity = popularity;
     }
 
+    @Nullable
+    public Integer getPopularityOrder() {
+        return popularityOrder;
+    }
+
+    public void setPopularityOrder(@Nullable Integer popularityOrder) {
+        this.popularityOrder = popularityOrder;
+    }
+
     public String getPosterPath() {
         return posterPath;
     }
 
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
+    }
+
+    @Nullable
+    public Integer getRatingOrder() {
+        return ratingOrder;
+    }
+
+    public void setRatingOrder(@Nullable Integer ratingOrder) {
+        this.ratingOrder = ratingOrder;
     }
 
     public String getReleaseDate() {
@@ -213,9 +259,14 @@ public class Movie implements Parcelable {
         this.voteCount = voteCount;
     }
 
+    private void writeBoolean(Parcel dest, Boolean favorite) {
+        dest.writeByte((byte) (favorite != null && favorite ? 1 : 0));//default false
+    }
+
+    @Ignore
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (adult ? 1 : 0));
+        writeBoolean(dest, adult);
         dest.writeString(backdropPath);
         dest.writeList(genreIds);
         dest.writeInt(id);
@@ -226,9 +277,9 @@ public class Movie implements Parcelable {
         dest.writeString(posterPath);
         dest.writeString(releaseDate);
         dest.writeString(title);
-        dest.writeByte((byte) (video ? 1 : 0));
+        writeBoolean(dest, video);
         dest.writeDouble(voteAverage);
         dest.writeInt(voteCount);
-        dest.writeByte((byte) (favorite ? 1 : 0));
+        writeBoolean(dest, favorite);
     }
 }

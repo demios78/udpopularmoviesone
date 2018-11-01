@@ -13,18 +13,19 @@ import com.snindustries.project.udacity.popularmovies.model.Movie;
  * (c) 10/30/18
  */
 public class MovieViewModel extends ViewModel {
-    LiveData<PageKeyedDataSource<Integer, Movie>> liveDataSource;
-    LiveData<PagedList<Movie>> moviePagedList;
+    private LiveData<PagedList<Movie>> moviePagedList;
 
     public MovieViewModel() {
         MovieDatasourceFactory factory = new MovieDatasourceFactory();
-
-        liveDataSource = factory.getMovieLiveDataSource();
 
         PagedList.Config pConfig = new PagedList.Config.Builder()
                 .setPageSize(20)//TODO: move this to config?
                 .setEnablePlaceholders(false)
                 .build();
         moviePagedList = new LivePagedListBuilder<>(factory, pConfig).build();
+    }
+
+    public LiveData<PagedList<Movie>> getMoviePagedList() {
+        return moviePagedList;
     }
 }
