@@ -6,8 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.snindustries.project.udacity.popularmovies.model.Movie;
-import com.snindustries.project.udacity.popularmovies.util.ImdbClient;
+import com.snindustries.project.udacity.popularmovies.repository.Movie;
+import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
 import com.squareup.picasso.Picasso;
 
 /**

@@ -22,9 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.snindustries.project.udacity.popularmovies.model.Movie;
-import com.snindustries.project.udacity.popularmovies.model.MovieSearchResponse;
-import com.snindustries.project.udacity.popularmovies.util.ImdbClient;
+import com.snindustries.project.udacity.popularmovies.repository.Movie;
+import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
+import com.snindustries.project.udacity.popularmovies.repository.webservice.MovieSearchResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;

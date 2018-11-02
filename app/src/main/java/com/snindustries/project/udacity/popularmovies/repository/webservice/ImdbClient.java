@@ -1,10 +1,7 @@
-package com.snindustries.project.udacity.popularmovies.util;
+package com.snindustries.project.udacity.popularmovies.repository.webservice;
 
 import com.snindustries.project.udacity.popularmovies.BuildConfig;
-import com.snindustries.project.udacity.popularmovies.model.ConfigResponse;
-import com.snindustries.project.udacity.popularmovies.model.ImageConfig;
-import com.snindustries.project.udacity.popularmovies.model.Movie;
-import com.snindustries.project.udacity.popularmovies.model.MovieSearchResponse;
+import com.snindustries.project.udacity.popularmovies.repository.Movie;
 
 import java.io.IOException;
 import java.util.Objects;

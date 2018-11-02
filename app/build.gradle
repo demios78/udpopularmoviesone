@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
+    dataBinding { enabled = true }
     defaultConfig {
         applicationId "com.snindustries.project.udacity.popularmovies"
         minSdkVersion 20
@@ -20,14 +21,50 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
+    def appCompat = "27.1.1"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.android.support:recyclerview-v7:27.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.android.support:design:27.1.1'
+    implementation "com.android.support:appcompat-v7:$appCompat"
+    implementation "com.android.support.constraint:constraint-layout:1.1.3"
+    implementation "com.android.support:recyclerview-v7:$appCompat"
+    implementation "com.android.support:design:$appCompat"
+
+    // Image loading library
+    implementation "com.squareup.picasso:picasso:2.71828"
+    implementation "com.squareup.okhttp3:okhttp:3.11.0"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.4.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    //Gson for Retrofit
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // Android Architecture Components
+    def arch_version = "1.1.1"
+
+    //adding view model
+    implementation "android.arch.lifecycle:extensions:$arch_version"
+    implementation "android.arch.lifecycle:viewmodel:$arch_version"
+
+    //adding paging
+    implementation "android.arch.paging:runtime:1.0.1"
+
+    //Room
+    implementation "android.arch.persistence.room:runtime:$arch_version"
+    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
+    androidTestImplementation "android.arch.persistence.room:testing:$arch_version"
+
+    //LocalDatabase Viewer Library
+    //TODO: display library license info
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+
 }

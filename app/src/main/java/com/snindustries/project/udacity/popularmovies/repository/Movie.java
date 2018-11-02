@@ -1,15 +1,25 @@
-package com.snindustries.project.udacity.popularmovies.model;
+package com.snindustries.project.udacity.popularmovies.repository;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+import com.snindustries.project.udacity.popularmovies.repository.database.ExtraProperties;
+import com.snindustries.project.udacity.popularmovies.repository.database.MovieTypeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
 /**
- *
- * Model for response of Get Movie
- *
+ * Model for response of Get Movie, also model for database entry
+ * <p>
  * https://developers.themoviedb.org/3/movies/get-popular-movies
  * and
  * https://developers.themoviedb.org/3/movies/get-top-rated-movies
@@ -17,6 +27,12 @@ import java.util.List;
  * @author shaaz noormohammad
  * (c) October 1, 2018
  */
+@Entity(tableName = "movies",
+        foreignKeys = @ForeignKey(entity = ExtraProperties.class,
+                parentColumns = "id",
+                childColumns = "id",
+                onDelete = CASCADE,
+                onUpdate = CASCADE))
 public class Movie implements Parcelable {
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Movie>() {
 
@@ -30,19 +46,50 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    @SerializedName("adult")
     private Boolean adult;
+
+    @ColumnInfo
+    @SerializedName("backdrop_path")
     private String backdropPath;
+
+    @SerializedName("genre_ids")
+    @TypeConverters(MovieTypeConverter.class)
     private List<Integer> genreIds = null;
+
+    @PrimaryKey
+    @SerializedName("id")
     private Integer id;
+
+    @SerializedName("original_language")
     private String originalLanguage;
+
+    @SerializedName("original_title")
     private String originalTitle;
+
+    @SerializedName("overview")
     private String overview;
+
+    @SerializedName("popularity")
     private Double popularity;
+
+    @SerializedName("poster_path")
     private String posterPath;
+
+    @SerializedName("release_date")
     private String releaseDate;
+
+    @SerializedName("title")
     private String title;
+
+    @SerializedName("video")
     private Boolean video;
+
+    @SerializedName("vote_average")
     private Double voteAverage;
+
+    @SerializedName("vote_count")
     private Integer voteCount;
 
     public Movie() {

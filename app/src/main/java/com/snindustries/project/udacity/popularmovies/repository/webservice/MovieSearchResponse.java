@@ -1,4 +1,6 @@
-package com.snindustries.project.udacity.popularmovies.model;
+package com.snindustries.project.udacity.popularmovies.repository.webservice;
+
+import com.snindustries.project.udacity.popularmovies.repository.Movie;
 
 import java.util.List;
 
