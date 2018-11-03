@@ -11,16 +11,16 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "extra")
 public class ExtraProperties {
 
-    @ColumnInfo(name = "favorite")
+    @ColumnInfo(name = "ex_favorite")
     public boolean favorite;
     @PrimaryKey
     @ColumnInfo(name = "ex_id")
     public long id;
-    @ColumnInfo(name = "popularity")
+    @ColumnInfo(name = "ex_popularity")
     public long popularityOrder;
-    @ColumnInfo(name = "rating")
+    @ColumnInfo(name = "ex_rating")
     public long ratingOrder;
-    @ColumnInfo(name = "time_updated")
+    @ColumnInfo(name = "ex_time_updated")
     public long time_updated;
 
 }

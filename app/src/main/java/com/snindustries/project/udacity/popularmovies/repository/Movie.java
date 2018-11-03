@@ -29,7 +29,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  */
 @Entity(tableName = "movies",
         foreignKeys = @ForeignKey(entity = ExtraProperties.class,
-                parentColumns = "id",
+                parentColumns = "ex_id",
                 childColumns = "id",
                 onDelete = CASCADE,
                 onUpdate = CASCADE))
