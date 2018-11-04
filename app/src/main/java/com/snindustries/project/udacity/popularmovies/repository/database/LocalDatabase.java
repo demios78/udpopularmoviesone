@@ -42,6 +42,11 @@ public abstract class LocalDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+
+    public ExtraProperties getExtraProperties(Integer id) {
+        return movieDAO().getExtraProperties(id);
+    }
+
     public LiveData<PagedList<MovieExt>> getMoviesPaged() {
         return moviesPaged;
     }
@@ -73,6 +78,15 @@ public abstract class LocalDatabase extends RoomDatabase {
                 if (callback != null) {
                     callback.onSuccess(success);
                 }
+            }
+        });
+    }
+
+    public void update(ExtraProperties ext) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                movieDAO().update(ext);
             }
         });
     }

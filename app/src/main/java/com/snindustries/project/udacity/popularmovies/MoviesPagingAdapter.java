@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.snindustries.project.udacity.popularmovies.repository.Movie;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
 import com.squareup.picasso.Picasso;
@@ -40,13 +39,13 @@ public class MoviesPagingAdapter extends PagedListAdapter<MovieExt, MoviesPaging
         this.onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectionListener.onItemClicked(v, (Movie) v.getTag());
+                selectionListener.onItemClicked(v, (MovieExt) v.getTag());
             }
         };
         this.onLongClickListner = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                return selectionListener.onItemLongClicked(v, (Movie) v.getTag());
+                return selectionListener.onItemLongClicked(v, (MovieExt) v.getTag());
             }
         };
     }
@@ -80,9 +79,9 @@ public class MoviesPagingAdapter extends PagedListAdapter<MovieExt, MoviesPaging
     }
 
     public interface MovieSelectionListener {
-        void onItemClicked(View view, Movie movie);
+        void onItemClicked(View view, MovieExt movie);
 
-        boolean onItemLongClicked(View view, Movie movie);
+        boolean onItemLongClicked(View view, MovieExt movie);
     }
 
     static class MovieViewHolder extends RecyclerView.ViewHolder {

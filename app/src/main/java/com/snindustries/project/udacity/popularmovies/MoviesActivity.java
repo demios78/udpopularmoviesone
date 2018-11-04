@@ -24,7 +24,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.snindustries.project.udacity.popularmovies.databinding.ActivityMoviesBinding;
-import com.snindustries.project.udacity.popularmovies.repository.Movie;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 
 import java.util.Objects;
@@ -173,36 +172,21 @@ public class MoviesActivity extends AppCompatActivity {
 //        }
     }
 
-    private static class DefaultSelectionListener implements MoviesPagingAdapter.MovieSelectionListener {
+    private class DefaultSelectionListener implements MoviesPagingAdapter.MovieSelectionListener {
         @Override
-        public void onItemClicked(View view, Movie movie) {
+        public void onItemClicked(View view, MovieExt movie) {
             Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
-            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_PARCEL, movie);
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_PARCEL, movie.movie);
             view.getContext().startActivity(intent);
         }
 
         @Override
-        public boolean onItemLongClicked(View view, Movie movie) {
-            Toast.makeText(view.getContext(), "Long Clicked " + movie.getId() + "  " + movie.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+        public boolean onItemLongClicked(View view, MovieExt movie) {
+            Toast.makeText(view.getContext(), "Long Clicked " + movie.movie.getId() + "  " + movie.movie.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+            movieViewModel.toggleFavorite(movie.ext);
             return true;
         }
     }
-
-
-    /**
-     *  When a movie is selected, display its details.
-     *
-     * @author shaaz noormohammad
-     * October 1, 2018
-     */
-//    private static class MovieSelectionListener implements MoviesAdapter.SelectionListener<Movie> {
-//        @Override
-//        public void onItemClicked(View view, Movie item) {
-//            Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
-//            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_PARCEL, item);
-//            view.getContext().startActivity(intent);
-//        }
-//    }
 
 
     /**

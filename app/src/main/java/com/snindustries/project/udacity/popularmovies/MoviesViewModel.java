@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 
 import com.snindustries.project.udacity.popularmovies.repository.NetworkState;
 import com.snindustries.project.udacity.popularmovies.repository.Repository;
+import com.snindustries.project.udacity.popularmovies.repository.database.ExtraProperties;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 
 /**
@@ -39,10 +40,24 @@ public class MoviesViewModel extends AndroidViewModel {
         order.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                //TODO
+                itemPosition = 0;
+                pageLoaded = 1;
+                getNextPopularMovies();
             }
         });
         networkState = repository.getNetworkState();
+    }
+
+    @NonNull
+    private Repository.Strategy getListStrategy() {
+        switch (order.get()) {
+            case HIGHEST_RATED:
+                return Repository.RATING;
+            case MOST_POPULAR:
+                //fallthrough
+            default:
+                return Repository.POPULARITY;
+        }
     }
 
     public LiveData<PagedList<MovieExt>> getMovies() {
@@ -60,7 +75,7 @@ public class MoviesViewModel extends AndroidViewModel {
                         itemPosition = itemsPosition;
                         isLoading = false;
                     }
-                });
+                }, getListStrategy());
             }
         }
     }
@@ -71,5 +86,10 @@ public class MoviesViewModel extends AndroidViewModel {
 
     public void setOrder(int order) {
         this.order.set(order);
+    }
+
+    public void toggleFavorite(ExtraProperties ext) {
+        ext.favorite = !ext.favorite;
+        repository.update(ext);
     }
 }
