@@ -27,10 +27,13 @@ import retrofit2.Response;
  */
 public class Repository {
 
+    public static final int FAVORITE = 3;
+    public static final int HIGHEST_RATED = 1;
+    public static final int MOST_POPULAR = 0;
+
     public static final Strategy POPULARITY = new PopularityStrategy();
     public static final Strategy RATING = new RatingStrategy();
     private final LocalDatabase database;
-    private final LiveData<PagedList<MovieExt>> movies;
     private final ImdbApi network;
     private final Executor networkExecutor;
     private final MutableLiveData<NetworkState> networkState;
@@ -38,7 +41,6 @@ public class Repository {
     public Repository(Context context) {
         network = ImdbClient.getApi();
         database = LocalDatabase.getDatabase(context);
-        movies = database.getMoviesPaged();
         networkState = new MutableLiveData<>();
         networkExecutor = ((MovieApplication) context.getApplicationContext()).getNetworkExe();
     }
@@ -72,8 +74,16 @@ public class Repository {
                 });
     }
 
-    public LiveData<PagedList<MovieExt>> getMovies() {
-        return movies;
+    public LiveData<PagedList<MovieExt>> getFavoriteMovies() {
+        return database.getMoviesPagedFavorite();
+    }
+
+    public LiveData<PagedList<MovieExt>> getPopularMovies() {
+        return database.getMoviesPagedPopular();
+    }
+
+    public LiveData<PagedList<MovieExt>> getRatedMovies() {
+        return database.getMoviesPagedRated();
     }
 
     public MutableLiveData<NetworkState> getNetworkState() {
@@ -113,6 +123,7 @@ public class Repository {
             }
         });
     }
+
 
     public void update(ExtraProperties ext) {
         if (ext.id != 0) {
@@ -161,4 +172,6 @@ public class Repository {
             ext.ratingOrder = itemPosition + i + 1;
         }
     }
+
+
 }

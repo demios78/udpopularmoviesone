@@ -17,9 +17,9 @@ public class ExtraProperties {
     @ColumnInfo(name = "ex_id")
     public long id;
     @ColumnInfo(name = "ex_popularity")
-    public long popularityOrder;
+    public long popularityOrder = Integer.MAX_VALUE;
     @ColumnInfo(name = "ex_rating")
-    public long ratingOrder;
+    public long ratingOrder = Integer.MAX_VALUE;
     @ColumnInfo(name = "ex_time_updated")
     public long time_updated;
 

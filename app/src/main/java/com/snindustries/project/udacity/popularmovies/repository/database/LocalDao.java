@@ -16,8 +16,15 @@ import com.snindustries.project.udacity.popularmovies.repository.Movie;
 @Dao
 public interface LocalDao {
 
-    @Query("select * from movies inner join extra on movies.id = extra.ex_id order by popularity desc")
-    DataSource.Factory<Integer, MovieExt> getAllPaged();
+    @Query("select * from movies inner join extra on movies.id = extra.ex_id and ex_favorite='1' order by ex_popularity asc")
+    DataSource.Factory<Integer, MovieExt> getAllFavoritePaged();
+
+    @Query("select * from movies inner join extra on movies.id = extra.ex_id and ex_popularity != " + Integer.MAX_VALUE + " order by ex_popularity asc")
+    DataSource.Factory<Integer, MovieExt> getAllPopularPaged();
+
+    @Query("select * from movies inner join extra on movies.id = extra.ex_id and ex_rating != " + Integer.MAX_VALUE + "  order by ex_rating asc")
+    DataSource.Factory<Integer, MovieExt> getAllRatedPaged();
+
 
     @Query("select * from extra where ex_id=:id")
     ExtraProperties getExtraProperties(Integer id);

@@ -2,6 +2,8 @@ package com.snindustries.project.udacity.popularmovies;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -10,7 +12,7 @@ import java.util.concurrent.Executors;
  * (c) 11/2/18
  */
 public class MovieApplication extends Application {
-    public static final int N_THREADS = 1;
+    public static final int N_THREADS = 3;
     Executor database;
     Executor network;
     Executor worker;
@@ -30,6 +32,7 @@ public class MovieApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Stetho.initializeWithDefaults(this);
         network = Executors.newFixedThreadPool(N_THREADS);
         database = Executors.newFixedThreadPool(N_THREADS);
         worker = Executors.newFixedThreadPool(N_THREADS);

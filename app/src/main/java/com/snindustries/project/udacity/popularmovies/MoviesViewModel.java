@@ -4,15 +4,21 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.paging.PagedList;
 import android.databinding.Observable;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.snindustries.project.udacity.popularmovies.repository.NetworkState;
 import com.snindustries.project.udacity.popularmovies.repository.Repository;
 import com.snindustries.project.udacity.popularmovies.repository.database.ExtraProperties;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
+
+import static com.snindustries.project.udacity.popularmovies.repository.Repository.FAVORITE;
+import static com.snindustries.project.udacity.popularmovies.repository.Repository.HIGHEST_RATED;
+import static com.snindustries.project.udacity.popularmovies.repository.Repository.MOST_POPULAR;
 
 /**
  * @author Shaaz Noormohammad
@@ -20,11 +26,8 @@ import com.snindustries.project.udacity.popularmovies.repository.database.MovieE
  */
 public class MoviesViewModel extends AndroidViewModel {
 
-    public static final int FAVORITE = 3;
-    public static final int HIGHEST_RATED = 1;
-    public static final int MOST_POPULAR = 0;
 
-    private final LiveData<PagedList<MovieExt>> movies;
+    private final MutableLiveData<PagedList<MovieExt>> movies;
     private final MutableLiveData<NetworkState> networkState;
     private final ObservableInt order;
     private final Repository repository;
@@ -35,17 +38,41 @@ public class MoviesViewModel extends AndroidViewModel {
     public MoviesViewModel(@NonNull Application application) {
         super(application);
         repository = new Repository(application);
-        movies = repository.getMovies();
         order = new ObservableInt(MOST_POPULAR);
         order.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 itemPosition = 0;
                 pageLoaded = 1;
-                getNextPopularMovies();
+                getNextMovies();
             }
         });
         networkState = repository.getNetworkState();
+        movies = new MutableLiveData<>();
+        repository.getFavoriteMovies().observeForever(new Observer<PagedList<MovieExt>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<MovieExt> movieExts) {
+                if (order.get() == FAVORITE) {
+                    movies.postValue(movieExts);
+                }
+            }
+        });
+        repository.getPopularMovies().observeForever(new Observer<PagedList<MovieExt>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<MovieExt> movieExts) {
+                if (order.get() == MOST_POPULAR) {
+                    movies.postValue(movieExts);
+                }
+            }
+        });
+        repository.getRatedMovies().observeForever(new Observer<PagedList<MovieExt>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<MovieExt> movieExts) {
+                if (order.get() == HIGHEST_RATED) {
+                    movies.postValue(movieExts);
+                }
+            }
+        });
     }
 
     @NonNull
@@ -53,6 +80,8 @@ public class MoviesViewModel extends AndroidViewModel {
         switch (order.get()) {
             case HIGHEST_RATED:
                 return Repository.RATING;
+            case FAVORITE:
+                //fallthrough
             case MOST_POPULAR:
                 //fallthrough
             default:
@@ -64,7 +93,7 @@ public class MoviesViewModel extends AndroidViewModel {
         return movies;
     }
 
-    public void getNextPopularMovies() {
+    public void getNextMovies() {
         synchronized (this) {
             if (!isLoading) {
                 isLoading = true;

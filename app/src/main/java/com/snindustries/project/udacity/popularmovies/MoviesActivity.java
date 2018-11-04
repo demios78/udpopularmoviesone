@@ -24,9 +24,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.snindustries.project.udacity.popularmovies.databinding.ActivityMoviesBinding;
+import com.snindustries.project.udacity.popularmovies.repository.Repository;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 
 import java.util.Objects;
+
+import static com.snindustries.project.udacity.popularmovies.repository.Repository.HIGHEST_RATED;
+import static com.snindustries.project.udacity.popularmovies.repository.Repository.MOST_POPULAR;
 
 /**
  * Displays a list of movies that are sorted by popular or top rated.
@@ -37,13 +41,11 @@ import java.util.Objects;
  */
 public class MoviesActivity extends AppCompatActivity {
 
-    private static final int MOST_POPULAR = 0;
+
     private static final int POSTER_WIDTH = 520;
-    private static final int TOP_RATED = 1;
+
     private MoviesPagingAdapter adapter;
     private ActivityMoviesBinding binding;
-    private int currentPage;
-    private int listSort = MOST_POPULAR;
     private MoviesViewModel movieViewModel;
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -60,7 +62,7 @@ public class MoviesActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.network_disconnected).setVisibility(View.GONE);
 //            initializeMovieList();
-            movieViewModel.getNextPopularMovies();
+            movieViewModel.getNextMovies();
         }
     }
 
@@ -125,13 +127,16 @@ public class MoviesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.most_popular:
-                resetList(MOST_POPULAR);
+                movieViewModel.setOrder(MOST_POPULAR);
                 return true;
             case R.id.top_rated:
-                resetList(TOP_RATED);
+                movieViewModel.setOrder(Repository.HIGHEST_RATED);
+                return true;
+            case R.id.favorites:
+                movieViewModel.setOrder(Repository.FAVORITE);
                 return true;
             case R.id.addMovies:
-                movieViewModel.getNextPopularMovies();
+                movieViewModel.getNextMovies();
                 return true;
             default:
 
@@ -155,21 +160,14 @@ public class MoviesActivity extends AppCompatActivity {
         movieViewModel.getOrder().addOnPropertyChangedCallback(propCallback = new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                setTitle(movieViewModel.getOrder().get() == MOST_POPULAR ? R.string.most_popular : R.string.top_rated);
+                setActivityTitle(movieViewModel.getOrder().get());
             }
         });
+        setActivityTitle(movieViewModel.getOrder().get());
     }
 
-    private void resetList(int sortConstant) {
-        setTitle(sortConstant == MOST_POPULAR ? R.string.most_popular : R.string.top_rated);
-        listSort = sortConstant;
-        currentPage = 0;
-//        if (adapter != null) {
-//            adapter.reset();
-//            getNextPageOfResults();
-//        } else {
-//            checkNetworkAvailability();
-//        }
+    private void setActivityTitle(int sortConstant) {
+        setTitle(sortConstant == MOST_POPULAR ? R.string.most_popular : sortConstant == HIGHEST_RATED ? R.string.top_rated : R.string.favorites);
     }
 
     private class DefaultSelectionListener implements MoviesPagingAdapter.MovieSelectionListener {
@@ -210,7 +208,7 @@ public class MoviesActivity extends AppCompatActivity {
             int totalItemCount = layoutManager.getItemCount();
             int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             if (totalItemCount <= lastVisibleItem + layoutManager.getSpanCount()) {
-                movieViewModel.getNextPopularMovies();
+                movieViewModel.getNextMovies();
             }
         }
     }

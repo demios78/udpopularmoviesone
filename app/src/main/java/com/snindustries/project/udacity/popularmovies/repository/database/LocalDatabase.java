@@ -23,7 +23,17 @@ import java.util.concurrent.Executor;
 public abstract class LocalDatabase extends RoomDatabase {
     private static LocalDatabase INSTANCE;
     private Executor executor;
-    private LiveData<PagedList<MovieExt>> moviesPaged;
+    private LiveData<PagedList<MovieExt>> moviesPagedFavorite;
+    private LiveData<PagedList<MovieExt>> moviesPagedPopular;
+    private LiveData<PagedList<MovieExt>> moviesPagedRated;
+
+    public LiveData<PagedList<MovieExt>> getMoviesPagedFavorite() {
+        return moviesPagedFavorite;
+    }
+
+    public LiveData<PagedList<MovieExt>> getMoviesPagedPopular() {
+        return moviesPagedPopular;
+    }
 
     public static LocalDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -47,21 +57,33 @@ public abstract class LocalDatabase extends RoomDatabase {
         return movieDAO().getExtraProperties(id);
     }
 
-    public LiveData<PagedList<MovieExt>> getMoviesPaged() {
-        return moviesPaged;
+    public LiveData<PagedList<MovieExt>> getMoviesPagedRated() {
+        return moviesPagedRated;
     }
 
     private void init(MovieApplication context) {
-        moviesPaged = new LivePagedListBuilder<>(
-                movieDAO().getAllPaged(),
-                new PagedList.Config.Builder()
-                        .setEnablePlaceholders(false)
-                        .setInitialLoadSizeHint(20)
-                        .setPageSize(20)
-                        .build())
-                .setFetchExecutor(context.getDatabaseExe())
-                .build();
         executor = context.getDatabaseExe();
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(20)
+                .setPageSize(20)
+                .build();
+        moviesPagedPopular = new LivePagedListBuilder<>(
+                movieDAO().getAllPopularPaged(),
+                config)
+                .setFetchExecutor(executor)
+                .build();
+        moviesPagedRated = new LivePagedListBuilder<>(
+                movieDAO().getAllRatedPaged(),
+                config)
+                .setFetchExecutor(executor)
+                .build();
+        moviesPagedFavorite = new LivePagedListBuilder<>(
+                movieDAO().getAllFavoritePaged(),
+                config)
+                .setFetchExecutor(executor)
+                .build();
+
     }
 
     public abstract LocalDao movieDAO();

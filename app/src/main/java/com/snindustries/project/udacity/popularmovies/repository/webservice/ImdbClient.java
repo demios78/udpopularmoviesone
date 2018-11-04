@@ -1,5 +1,6 @@
 package com.snindustries.project.udacity.popularmovies.repository.webservice;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.snindustries.project.udacity.popularmovies.BuildConfig;
@@ -12,7 +13,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -54,9 +54,8 @@ public class ImdbClient {
                         return chain.proceed(request.newBuilder().url(url).build());
                     }
                 })
-                .addInterceptor(
-                        new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-                )
+                //.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addNetworkInterceptor(new StethoInterceptor())
                 .build();
 
         retrofit = new Retrofit.Builder()

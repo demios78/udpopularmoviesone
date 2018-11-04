@@ -64,7 +64,7 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:$arch_version"
 
     //LocalDatabase Viewer Library
-    //TODO: display library license info
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+    compile 'com.facebook.stetho:stetho:1.5.0'
+    compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
 }
