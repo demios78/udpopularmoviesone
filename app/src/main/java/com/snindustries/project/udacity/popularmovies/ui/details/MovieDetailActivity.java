@@ -1,4 +1,4 @@
-package com.snindustries.project.udacity.popularmovies;
+package com.snindustries.project.udacity.popularmovies.ui.details;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.snindustries.project.udacity.popularmovies.R;
 import com.snindustries.project.udacity.popularmovies.repository.Movie;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
 import com.squareup.picasso.Picasso;

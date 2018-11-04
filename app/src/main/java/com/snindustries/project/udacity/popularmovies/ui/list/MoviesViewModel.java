@@ -1,4 +1,4 @@
-package com.snindustries.project.udacity.popularmovies;
+package com.snindustries.project.udacity.popularmovies.ui.list;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

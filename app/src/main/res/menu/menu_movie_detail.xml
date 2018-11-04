@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.snindustries.project.udacity.popularmovies.MovieDetailActivity">
+    tools:context="com.snindustries.project.udacity.popularmovies.ui.details.MovieDetailActivity">
     <item
         android:id="@+id/most_popular"
         android:orderInCategory="100"

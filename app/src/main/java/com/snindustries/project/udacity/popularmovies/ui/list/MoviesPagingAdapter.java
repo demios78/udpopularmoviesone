@@ -1,4 +1,4 @@
-package com.snindustries.project.udacity.popularmovies;
+package com.snindustries.project.udacity.popularmovies.ui.list;
 
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.snindustries.project.udacity.popularmovies.R;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
 import com.squareup.picasso.Picasso;

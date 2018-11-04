@@ -1,4 +1,4 @@
-package com.snindustries.project.udacity.popularmovies;
+package com.snindustries.project.udacity.popularmovies.ui.list;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
@@ -23,9 +23,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.snindustries.project.udacity.popularmovies.R;
 import com.snindustries.project.udacity.popularmovies.databinding.ActivityMoviesBinding;
 import com.snindustries.project.udacity.popularmovies.repository.NetworkState;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
+import com.snindustries.project.udacity.popularmovies.ui.details.MovieDetailActivity;
 
 import java.util.Objects;
 
