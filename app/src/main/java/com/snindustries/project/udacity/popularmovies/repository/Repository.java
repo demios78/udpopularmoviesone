@@ -35,14 +35,14 @@ public class Repository {
     public static final Strategy RATING = new RatingStrategy();
     private final LocalDatabase database;
     private final ImdbApi network;
-    private final Executor networkExecutor;
+    private final Executor databaseExecutor;
     private final MutableLiveData<NetworkState> networkState;
 
     public Repository(Context context) {
         network = ImdbClient.getApi();
         database = LocalDatabase.getDatabase(context);
         networkState = new MutableLiveData<>();
-        networkExecutor = ((MovieApplication) context.getApplicationContext()).getNetworkExe();
+        databaseExecutor = ((MovieApplication) context.getApplicationContext()).getDatabaseExe();
     }
 
     public void get(int page, long itemPosition, MovieUpdate updateCallback, Strategy strategy) {
@@ -59,7 +59,7 @@ public class Repository {
                         MovieSearchResponse body = response.body();
                         if (body != null && body.getResults() != null) {
 
-                            networkExecutor.execute(new Runnable() {
+                            databaseExecutor.execute(new Runnable() {
                                 @Override
                                 public void run() {
                                     saveResponse(body, itemPosition, updateCallback, page, strategy);

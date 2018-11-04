@@ -69,7 +69,7 @@ public class MoviesPagingAdapter extends PagedListAdapter<MovieExt, MoviesPaging
         viewHolder.moviePoster.setOnClickListener(onClickListener);
         viewHolder.moviePoster.setOnLongClickListener(onLongClickListner);
 
-        viewHolder.favoriteIcon.setVisibility(item.ext.favorite ? View.VISIBLE : View.GONE);
+        viewHolder.favoriteIcon.setAlpha(item.ext.favorite ? 1f : 0.25f);
     }
 
     @NonNull

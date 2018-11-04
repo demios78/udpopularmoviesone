@@ -1,5 +1,6 @@
 package com.snindustries.project.udacity.popularmovies;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.paging.PagedList;
@@ -21,14 +22,14 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.snindustries.project.udacity.popularmovies.databinding.ActivityMoviesBinding;
-import com.snindustries.project.udacity.popularmovies.repository.Repository;
+import com.snindustries.project.udacity.popularmovies.repository.NetworkState;
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 
 import java.util.Objects;
 
+import static com.snindustries.project.udacity.popularmovies.repository.Repository.FAVORITE;
 import static com.snindustries.project.udacity.popularmovies.repository.Repository.HIGHEST_RATED;
 import static com.snindustries.project.udacity.popularmovies.repository.Repository.MOST_POPULAR;
 
@@ -45,32 +46,28 @@ public class MoviesActivity extends AppCompatActivity {
     private static final int POSTER_WIDTH = 520;
 
     private MoviesPagingAdapter adapter;
-    private ActivityMoviesBinding binding;
     private MoviesViewModel movieViewModel;
+    private MutableLiveData<NetworkState> networkState;
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             checkNetworkAvailability();
         }
     };
-    private Observer<PagedList<MovieExt>> observer;
     private Observable.OnPropertyChangedCallback propCallback;
 
     private void checkNetworkAvailability() {
         if (!isNetworkConnected()) {
-            findViewById(R.id.network_disconnected).setVisibility(View.VISIBLE);
+            if (networkState.getValue() != NetworkState.DISCONNECTED) {
+                networkState.postValue(NetworkState.DISCONNECTED);
+            }
         } else {
-            findViewById(R.id.network_disconnected).setVisibility(View.GONE);
-//            initializeMovieList();
-            movieViewModel.getNextMovies();
+            if (networkState.getValue() != NetworkState.IDLE) {
+                networkState.postValue(NetworkState.IDLE);
+            }
         }
     }
 
-    private void getNextPageOfResults() {
-        if (isNetworkConnected()) {
-            //new GetMoviesTask(adapter, listSort).execute(++currentPage);
-        }
-    }
 
     /**
      * Gets number of posters that can fit on this screen width.
@@ -102,17 +99,29 @@ public class MoviesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_movies);
+        ActivityMoviesBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_movies);
         movieViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         adapter = new MoviesPagingAdapter(getWidth() / getNumberOfPosters(), new DefaultSelectionListener());
         binding.recycler.setAdapter(adapter);
         binding.recycler.setLayoutManager(new GridLayoutManager(this, getNumberOfPosters()));
-        binding.recycler.addOnScrollListener(new NextResultsPageScrollListener(adapter, binding.recycler.getLayoutManager()));
-        movieViewModel.getMovies().observe(this, observer = new Observer<PagedList<MovieExt>>() {
+        binding.recycler.addOnScrollListener(new NextResultsPageScrollListener(binding.recycler.getLayoutManager()));
+        movieViewModel.getMovies().observe(this, new Observer<PagedList<MovieExt>>() {
             @Override
             public void onChanged(@Nullable PagedList<MovieExt> movieExts) {
                 adapter.submitList(movieExts);
+            }
+        });
+        networkState = movieViewModel.getNetworkState();
+        networkState.observe(this, new Observer<NetworkState>() {
+            @Override
+            public void onChanged(@Nullable NetworkState networkState) {
+                if (networkState != null) {
+                    findViewById(R.id.network_disconnected).setVisibility(networkState == NetworkState.DISCONNECTED ? View.VISIBLE : View.GONE);
+                    if (networkState == NetworkState.IDLE) {
+                        movieViewModel.getNextMovies();
+                    }
+                }
             }
         });
     }
@@ -130,10 +139,10 @@ public class MoviesActivity extends AppCompatActivity {
                 movieViewModel.setOrder(MOST_POPULAR);
                 return true;
             case R.id.top_rated:
-                movieViewModel.setOrder(Repository.HIGHEST_RATED);
+                movieViewModel.setOrder(HIGHEST_RATED);
                 return true;
             case R.id.favorites:
-                movieViewModel.setOrder(Repository.FAVORITE);
+                movieViewModel.setOrder(FAVORITE);
                 return true;
             case R.id.addMovies:
                 movieViewModel.getNextMovies();
@@ -180,7 +189,6 @@ public class MoviesActivity extends AppCompatActivity {
 
         @Override
         public boolean onItemLongClicked(View view, MovieExt movie) {
-            Toast.makeText(view.getContext(), "Long Clicked " + movie.movie.getId() + "  " + movie.movie.getOriginalTitle(), Toast.LENGTH_SHORT).show();
             movieViewModel.toggleFavorite(movie.ext);
             return true;
         }
@@ -194,11 +202,9 @@ public class MoviesActivity extends AppCompatActivity {
      * October 1, 2018
      */
     private class NextResultsPageScrollListener extends RecyclerView.OnScrollListener {
-        private final MoviesPagingAdapter finalAdapter;
         private final GridLayoutManager layoutManager;
 
-        public NextResultsPageScrollListener(MoviesPagingAdapter finalAdapter, RecyclerView.LayoutManager layoutManager) {
-            this.finalAdapter = finalAdapter;
+        public NextResultsPageScrollListener(RecyclerView.LayoutManager layoutManager) {
             this.layoutManager = (GridLayoutManager) layoutManager;
         }
 

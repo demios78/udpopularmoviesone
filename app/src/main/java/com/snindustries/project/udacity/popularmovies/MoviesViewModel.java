@@ -93,9 +93,13 @@ public class MoviesViewModel extends AndroidViewModel {
         return movies;
     }
 
+    public MutableLiveData<NetworkState> getNetworkState() {
+        return networkState;
+    }
+
     public void getNextMovies() {
         synchronized (this) {
-            if (!isLoading) {
+            if (!isLoading && networkState.getValue() == NetworkState.IDLE || networkState.getValue() == NetworkState.LOADED) {
                 isLoading = true;
                 repository.get(pageLoaded, itemPosition, new Repository.MovieUpdate() {
                     @Override
@@ -105,6 +109,21 @@ public class MoviesViewModel extends AndroidViewModel {
                         isLoading = false;
                     }
                 }, getListStrategy());
+            } else {
+                switch (order.get()) {
+                    case HIGHEST_RATED:
+                        movies.postValue(repository.getRatedMovies().getValue());
+                        break;
+                    case FAVORITE:
+                        movies.postValue(repository.getFavoriteMovies().getValue());
+                        break;
+                    case MOST_POPULAR:
+                        movies.postValue(repository.getPopularMovies().getValue());
+                        break;
+                    default:
+                        break;
+                }
+
             }
         }
     }
