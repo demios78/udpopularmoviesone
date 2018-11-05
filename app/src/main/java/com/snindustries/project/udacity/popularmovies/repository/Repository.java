@@ -11,7 +11,10 @@ import com.snindustries.project.udacity.popularmovies.repository.database.LocalD
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbApi;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
+import com.snindustries.project.udacity.popularmovies.repository.webservice.MovieDetailResponse;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.MovieSearchResponse;
+import com.snindustries.project.udacity.popularmovies.repository.webservice.ReviewsResponse;
+import com.snindustries.project.udacity.popularmovies.repository.webservice.VideosResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +37,8 @@ public class Repository {
     public static final Strategy POPULARITY = new PopularityStrategy();
     public static final Strategy RATING = new RatingStrategy();
     private final LocalDatabase database;
-    private final ImdbApi network;
     private final Executor databaseExecutor;
+    private final ImdbApi network;
     private final MutableLiveData<NetworkState> networkState;
 
     public Repository(Context context) {
@@ -82,16 +85,44 @@ public class Repository {
         return database.getMovie(movieId);
     }
 
+    public LiveData<MovieDetailResponse> getMovieDetails(int movieId) {
+        return new GetMoviePropsStrategy<MovieDetailResponse>(network, networkState, movieId) {
+            @Override
+            protected Call<MovieDetailResponse> getMovieProp(ImdbApi network, int movieId) {
+                return network.getMovie(movieId);
+            }
+        }.getMovieProperty();
+    }
+
+    public LiveData<ReviewsResponse> getMovieReviews(int movieId) {
+        return new GetMoviePropsStrategy<ReviewsResponse>(network, networkState, movieId) {
+
+            @Override
+            protected Call<ReviewsResponse> getMovieProp(ImdbApi network, int movieId) {
+                return network.getMovieReviews(movieId);
+            }
+        }.getMovieProperty();
+    }
+
+    public LiveData<VideosResponse> getMovieVideos(int movieId) {
+        return new GetMoviePropsStrategy<VideosResponse>(network, networkState, movieId) {
+            @Override
+            protected Call<VideosResponse> getMovieProp(ImdbApi network, int movieId) {
+                return network.getMovieVideos(movieId);
+            }
+        }.getMovieProperty();
+    }
+
+    public MutableLiveData<NetworkState> getNetworkState() {
+        return networkState;
+    }
+
     public LiveData<PagedList<MovieExt>> getPopularMovies() {
         return database.getMoviesPagedPopular();
     }
 
     public LiveData<PagedList<MovieExt>> getRatedMovies() {
         return database.getMoviesPagedRated();
-    }
-
-    public MutableLiveData<NetworkState> getNetworkState() {
-        return networkState;
     }
 
     private void saveResponse(MovieSearchResponse body, long itemPosition, MovieUpdate updateCallback, int page, Strategy strategy) {
@@ -128,12 +159,12 @@ public class Repository {
         });
     }
 
-
     public void update(ExtraProperties ext) {
         if (ext.id != 0) {
             database.update(ext);
         }
     }
+
 
     public interface MovieUpdate {
         void onComplete(int page, long itemsPosition);
@@ -143,6 +174,51 @@ public class Repository {
         Call<MovieSearchResponse> getMovies(ImdbApi network, int page);
 
         void updateOrder(long itemPosition, int i, ExtraProperties ext);
+    }
+
+    private static abstract class GetMoviePropsStrategy<T> {
+
+        private final int movieId;
+        private final ImdbApi network;
+        private final MutableLiveData<NetworkState> networkState;
+
+        public GetMoviePropsStrategy(ImdbApi network, MutableLiveData<NetworkState> networkState, int movieId) {
+            this.network = network;
+            this.networkState = networkState;
+            this.movieId = movieId;
+        }
+
+        abstract protected Call<T> getMovieProp(ImdbApi network, int movieId);
+
+        public LiveData<T> getMovieProperty() {
+            final MutableLiveData<T> out = new MutableLiveData<>();
+            networkState.postValue(NetworkState.LOADING);
+            getMovieProp(network, movieId).enqueue(new MyCallback<T>(out));
+            return out;
+        }
+
+        private class MyCallback<T> implements Callback<T> {
+            private final MutableLiveData<T> out;
+
+            public MyCallback(MutableLiveData<T> out) {
+                this.out = out;
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable t) {
+                networkState.postValue(NetworkState.IDLE);
+            }
+
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                if (response.body() != null) {
+                    out.postValue(response.body());
+                    networkState.postValue(NetworkState.LOADED);
+                } else {
+                    networkState.postValue(NetworkState.IDLE);
+                }
+            }
+        }
     }
 
     private static class PopularityStrategy implements Strategy {

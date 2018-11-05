@@ -1,7 +1,5 @@
 package com.snindustries.project.udacity.popularmovies.repository.webservice;
 
-import com.snindustries.project.udacity.popularmovies.repository.Movie;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -16,11 +14,18 @@ public interface ImdbApi {
     Call<ConfigResponse> getConfiguration();
 
     @GET("/movie/{movie_id}")
-    Call<Movie> getMovie(@Path("movie_id") int movieId);
+    Call<MovieDetailResponse> getMovie(@Path("movie_id") int movieId);
 
     @GET("movie/popular")
     Call<MovieSearchResponse> getMoviePopular(@Query("page") int page);
 
+    @GET("/movie/{movie_id}/reviews")
+    Call<ReviewsResponse> getMovieReviews(@Path("movie_id") int movieId);
+
     @GET("movie/top_rated")
     Call<MovieSearchResponse> getMovieTopRated(@Query("page") int page);
+
+    @GET("/movie/{movie_id}/videos")
+    Call<VideosResponse> getMovieVideos(@Path("movie_id") int movieId);
+
 }

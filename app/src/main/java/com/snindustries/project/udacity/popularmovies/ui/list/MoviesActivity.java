@@ -64,7 +64,7 @@ public class MoviesActivity extends AppCompatActivity {
                 networkState.postValue(NetworkState.DISCONNECTED);
             }
         } else {
-            if (networkState.getValue() != NetworkState.IDLE) {
+            if (networkState.getValue() != NetworkState.IDLE && networkState.getValue() != NetworkState.LOADED) {
                 networkState.postValue(NetworkState.IDLE);
             }
         }
