@@ -78,6 +78,10 @@ public class Repository {
         return database.getMoviesPagedFavorite();
     }
 
+    public LiveData<MovieExt> getMovie(int movieId) {
+        return database.getMovie(movieId);
+    }
+
     public LiveData<PagedList<MovieExt>> getPopularMovies() {
         return database.getMoviesPagedPopular();
     }

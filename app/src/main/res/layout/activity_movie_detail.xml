@@ -7,6 +7,10 @@
 
         <import type="android.view.View" />
 
+        <variable
+            name="item"
+            type="com.snindustries.project.udacity.popularmovies.ui.details.MovieDetailActivity.MovieDetailViewModel" />
+
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -67,6 +71,7 @@
                     android:id="@+id/release_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@{item.movieExt.movie.releaseDate}"
                     android:layout_marginStart="@dimen/padding"
                     android:layout_marginTop="@dimen/padding"
                     app:layout_constraintStart_toEndOf="@+id/movie_poster"
@@ -77,6 +82,7 @@
                     android:id="@+id/user_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@{@string/vote_format( item.movieExt.movie.voteAverage )}"
                     android:layout_marginStart="@dimen/padding"
                     app:layout_constraintStart_toEndOf="@+id/movie_poster"
                     app:layout_constraintTop_toBottomOf="@+id/release_date" />
@@ -89,6 +95,7 @@
                     android:layout_marginEnd="@dimen/padding"
                     android:layout_marginBottom="@dimen/padding"
                     android:singleLine="false"
+                    android:text="@{item.movieExt.movie.overview}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

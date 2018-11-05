@@ -1,5 +1,6 @@
 package com.snindustries.project.udacity.popularmovies.repository.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -28,6 +29,9 @@ public interface LocalDao {
 
     @Query("select * from extra where ex_id=:id")
     ExtraProperties getExtraProperties(Integer id);
+
+    @Query("select * from movies inner join extra on movies.id = extra.ex_id and id=:movieId")
+    LiveData<MovieExt> getMovie(int movieId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(ExtraProperties ext, Movie movie);

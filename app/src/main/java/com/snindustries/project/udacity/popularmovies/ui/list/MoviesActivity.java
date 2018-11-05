@@ -185,7 +185,7 @@ public class MoviesActivity extends AppCompatActivity {
         @Override
         public void onItemClicked(View view, MovieExt movie) {
             Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
-            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_PARCEL, movie.movie);
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_ID, movie.movie.getId());
             view.getContext().startActivity(intent);
         }
 
