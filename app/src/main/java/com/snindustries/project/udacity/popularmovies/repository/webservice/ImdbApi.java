@@ -6,6 +6,8 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
+ * API from IMDB.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Convert and store Integer list of genre ids.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

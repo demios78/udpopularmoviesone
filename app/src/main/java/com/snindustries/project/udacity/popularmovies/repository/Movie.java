@@ -18,7 +18,7 @@ import java.util.List;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
- * Model for response of Get Movie, also model for database entry
+ * Model for response of Get Movie, also model for database entry, because I didn't want to make an adapter/transformer for each type.
  * <p>
  * https://developers.themoviedb.org/3/movies/get-popular-movies
  * and

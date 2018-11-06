@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
+ * Locally maintained properties of a movie.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

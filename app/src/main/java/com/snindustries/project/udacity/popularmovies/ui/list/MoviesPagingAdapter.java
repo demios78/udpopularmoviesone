@@ -15,6 +15,8 @@ import com.snindustries.project.udacity.popularmovies.repository.webservice.Imdb
 import com.squareup.picasso.Picasso;
 
 /**
+ * The adapter for a paged list.  This will load movie items some at a time from the database.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

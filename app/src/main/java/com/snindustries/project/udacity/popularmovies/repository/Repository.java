@@ -12,7 +12,6 @@ import com.snindustries.project.udacity.popularmovies.repository.database.LocalD
 import com.snindustries.project.udacity.popularmovies.repository.database.MovieExt;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbApi;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ImdbClient;
-import com.snindustries.project.udacity.popularmovies.repository.webservice.MovieDetailResponse;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.MovieSearchResponse;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.ReviewsResponse;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.VideosResponse;
@@ -79,25 +78,12 @@ public class Repository {
     }
 
 
-    public LiveData<ExtraProperties> getExtraPropertiesLD(int movieId) {
-        return database.getExtraPropertiesLD(movieId);
-    }
-
     public LiveData<PagedList<MovieExt>> getFavoriteMovies() {
         return database.getMoviesPagedFavorite();
     }
 
     public LiveData<MovieExt> getMovie(int movieId) {
         return database.getMovie(movieId);
-    }
-
-    public LiveData<MovieDetailResponse> getMovieDetails(int movieId) {
-        return new GetMoviePropsStrategy<MovieDetailResponse>(network, networkState, movieId) {
-            @Override
-            protected Call<MovieDetailResponse> getMovieProp(ImdbApi network, int movieId) {
-                return network.getMovie(movieId);
-            }
-        }.getMovieProperty();
     }
 
     public LiveData<ReviewsResponse> getMovieReviews(int movieId) {
@@ -155,12 +141,9 @@ public class Repository {
             movieExts.add(movieExt);
         }
 
-        database.save(movieExts, new LocalDatabase.Callback() {
-            @Override
-            public void onSuccess(long[] idsSaved) {
-                if (updateCallback != null && idsSaved.length > 0) {
-                    updateCallback.onComplete(page, itemPosition + idsSaved.length);
-                }
+        database.save(movieExts, idsSaved -> {
+            if (updateCallback != null && idsSaved.length > 0) {
+                updateCallback.onComplete(page, itemPosition + idsSaved.length);
             }
         });
     }

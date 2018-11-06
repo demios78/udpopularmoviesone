@@ -5,6 +5,8 @@ import android.arch.persistence.room.Embedded;
 import com.snindustries.project.udacity.popularmovies.repository.Movie;
 
 /**
+ * Pojo to get both move and its extra properties.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

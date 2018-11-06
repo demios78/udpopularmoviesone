@@ -11,6 +11,8 @@ import android.arch.persistence.room.Update;
 import com.snindustries.project.udacity.popularmovies.repository.Movie;
 
 /**
+ * Access Room DB from this object.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

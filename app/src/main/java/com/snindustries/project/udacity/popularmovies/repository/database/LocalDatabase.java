@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
+ * Local database of movies stored from the imdb site.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

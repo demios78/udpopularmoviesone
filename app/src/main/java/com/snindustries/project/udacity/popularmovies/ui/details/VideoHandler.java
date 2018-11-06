@@ -9,6 +9,8 @@ import android.view.View;
 import com.snindustries.project.udacity.popularmovies.repository.webservice.Video;
 
 /**
+ * Handler for actions performed on a video.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/5/18
  */

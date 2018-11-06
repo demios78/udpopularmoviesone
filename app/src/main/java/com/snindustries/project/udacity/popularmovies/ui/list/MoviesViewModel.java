@@ -21,6 +21,8 @@ import static com.snindustries.project.udacity.popularmovies.repository.Reposito
 import static com.snindustries.project.udacity.popularmovies.repository.Repository.MOST_POPULAR;
 
 /**
+ * The view model for the Movies List activity.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */

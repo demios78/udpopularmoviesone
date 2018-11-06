@@ -1,6 +1,8 @@
 package com.snindustries.project.udacity.popularmovies.repository;
 
 /**
+ * Keeps track of the netwprk state so the UI can display it.
+ *
  * @author Shaaz Noormohammad
  * (c) 11/2/18
  */
