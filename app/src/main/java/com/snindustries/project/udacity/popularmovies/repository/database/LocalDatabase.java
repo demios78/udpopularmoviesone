@@ -27,6 +27,10 @@ public abstract class LocalDatabase extends RoomDatabase {
     private LiveData<PagedList<MovieExt>> moviesPagedPopular;
     private LiveData<PagedList<MovieExt>> moviesPagedRated;
 
+    public LiveData<ExtraProperties> getExtraPropertiesLD(int movieId) {
+        return movieDAO().getExtraPropertiesLD(movieId);
+    }
+
     public LiveData<MovieExt> getMovie(int movieId) {
         return movieDAO().getMovie(movieId);
     }

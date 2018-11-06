@@ -30,6 +30,9 @@ public interface LocalDao {
     @Query("select * from extra where ex_id=:id")
     ExtraProperties getExtraProperties(Integer id);
 
+    @Query("select * from extra where ex_id=:id")
+    LiveData<ExtraProperties> getExtraPropertiesLD(Integer id);
+
     @Query("select * from movies inner join extra on movies.id = extra.ex_id and id=:movieId")
     LiveData<MovieExt> getMovie(int movieId);
 

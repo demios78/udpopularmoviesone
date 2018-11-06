@@ -13,19 +13,19 @@ public interface ImdbApi {
     @GET("configuration")
     Call<ConfigResponse> getConfiguration();
 
-    @GET("/movie/{movie_id}")
+    @GET("movie/{movie_id}")
     Call<MovieDetailResponse> getMovie(@Path("movie_id") int movieId);
 
     @GET("movie/popular")
     Call<MovieSearchResponse> getMoviePopular(@Query("page") int page);
 
-    @GET("/movie/{movie_id}/reviews")
+    @GET("movie/{movie_id}/reviews")
     Call<ReviewsResponse> getMovieReviews(@Path("movie_id") int movieId);
 
     @GET("movie/top_rated")
     Call<MovieSearchResponse> getMovieTopRated(@Query("page") int page);
 
-    @GET("/movie/{movie_id}/videos")
+    @GET("movie/{movie_id}/videos")
     Call<VideosResponse> getMovieVideos(@Path("movie_id") int movieId);
 
 }

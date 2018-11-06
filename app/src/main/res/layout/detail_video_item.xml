@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.snindustries.project.udacity.popularmovies.repository.webservice.Video" />
+
+        <variable
+            name="handler"
+            type="com.snindustries.project.udacity.popularmovies.ui.details.VideoHandler" />
+
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="@{(view)->handler.onClick(view, item)}"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/play_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_arrow_black_24dp" />
+
+        <TextView
+            android:id="@+id/play_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play" />
+
+        <TextView
+            android:id="@+id/trailer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{item.name}" />
+
+    </LinearLayout>
+</layout>

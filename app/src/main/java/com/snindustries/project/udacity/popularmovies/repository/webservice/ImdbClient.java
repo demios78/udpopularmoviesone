@@ -13,6 +13,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -54,7 +55,7 @@ public class ImdbClient {
                         return chain.proceed(request.newBuilder().url(url).build());
                     }
                 })
-                //.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .addNetworkInterceptor(new StethoInterceptor())
                 .build();
 
@@ -89,6 +90,10 @@ public class ImdbClient {
 
     public String getPosterURL(Movie movie) {
         return params.imageConfig.getBaseUrl() + params.imageConfig.getPosterSizes().get(IMAGE_SIZE) + "/" + movie.getPosterPath();
+    }
+
+    public String getPosterURL(String posterPath) {
+        return params.imageConfig.getBaseUrl() + params.imageConfig.getPosterSizes().get(IMAGE_SIZE) + "/" + posterPath;
     }
 
     private void initializeConfiguration() {

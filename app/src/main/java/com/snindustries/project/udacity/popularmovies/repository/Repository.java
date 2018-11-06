@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.PagedList;
 import android.content.Context;
+import android.util.Log;
 
 import com.snindustries.project.udacity.popularmovies.MovieApplication;
 import com.snindustries.project.udacity.popularmovies.repository.database.ExtraProperties;
@@ -75,6 +76,11 @@ public class Repository {
                         }
                     }
                 });
+    }
+
+
+    public LiveData<ExtraProperties> getExtraPropertiesLD(int movieId) {
+        return database.getExtraPropertiesLD(movieId);
     }
 
     public LiveData<PagedList<MovieExt>> getFavoriteMovies() {
@@ -207,14 +213,18 @@ public class Repository {
             @Override
             public void onFailure(Call<T> call, Throwable t) {
                 networkState.postValue(NetworkState.IDLE);
+                t.printStackTrace();
             }
 
             @Override
-            public void onResponse(Call<T> call, Response<T> response) {
+            public void onResponse(Call<T> call, final Response<T> response) {
                 if (response.body() != null) {
+
                     out.postValue(response.body());
                     networkState.postValue(NetworkState.LOADED);
+
                 } else {
+                    Log.e(this.getClass().getSimpleName(), response.toString());
                     networkState.postValue(NetworkState.IDLE);
                 }
             }
@@ -252,6 +262,5 @@ public class Repository {
             ext.ratingOrder = itemPosition + i + 1;
         }
     }
-
 
 }

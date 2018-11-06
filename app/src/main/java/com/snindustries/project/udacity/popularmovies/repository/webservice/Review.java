@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Shaaz Noormohammad
  * (c) 11/4/18
  */
-class Review {
+public class Review {
 
     @SerializedName("author")
     @Expose

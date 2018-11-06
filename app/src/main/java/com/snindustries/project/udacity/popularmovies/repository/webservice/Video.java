@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Shaaz Noormohammad
  * (c) 11/4/18
  */
-class Video {
+public class Video {
     @SerializedName("id")
     @Expose
     public String id;
