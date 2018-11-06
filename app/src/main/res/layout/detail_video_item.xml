@@ -26,13 +26,14 @@
             android:id="@+id/play_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/play_button"
             android:src="@drawable/ic_play_arrow_black_24dp" />
 
         <TextView
             android:id="@+id/play_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play" />
+            android:text="@string/play" />
 
         <TextView
             android:id="@+id/trailer_name"
